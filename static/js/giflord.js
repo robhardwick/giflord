@@ -13,9 +13,12 @@
 
         var width = $link.data('width'),
             height = $link.data('height'),
-            $gif = $overlay
-                .children('.gif')
+            $gif = $overlay.children('.gif')
+                .hide()
                 .attr('src', $link.attr('href'))
+                .imagesLoaded(function() {
+                    $gif.fadeIn('fast');
+                });
 
         $.merge($gif, $overlay)
             .animate({
@@ -60,7 +63,7 @@
                             loadSpeed: 200
                         },
                         onBeforeLoad: function(e) {
-                            $link.css('borderColor', '#fff');
+                            $link.css('boxShadow', 'none');
                         },
                         onClose: function(e) {
                             $overlay.remove();
@@ -74,6 +77,9 @@
                     .addClass('gif')
                     .click(function() {
                         $link = $link.next();
+                        if ($link.size() == 0) {
+                            $link = $items.filter(':first');
+                        }
                         loadImage($overlay, $link);
                     })
                     .appendTo($overlay);
@@ -86,7 +92,7 @@
             $main
                 .masonry({
                     itemSelector : 'a',
-                    columnWidth: 50
+                    columnWidth: 25
                 })
             $items
                 .fadeIn();
