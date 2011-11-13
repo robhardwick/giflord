@@ -1,0 +1,8 @@
+cron:
+- description: gif queue task
+  url: /cron/queue
+  schedule: every 30 minutes
+
+- description: gif update task
+  url: /cron/update
+  schedule: every 30 seconds

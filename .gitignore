@@ -1,0 +1,9 @@
+# OS X
+.DS_Store
+
+# Python
+*.py[co]
+
+# App
+var/images/*
+var/giflord.db
