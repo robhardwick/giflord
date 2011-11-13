@@ -5,4 +5,4 @@ cron:
 
 - description: gif update task
   url: /cron/update
-  schedule: every 30 seconds
+  schedule: every 1 minutes
