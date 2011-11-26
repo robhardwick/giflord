@@ -8,6 +8,7 @@ from djangoappengine.storage import BlobstoreUploadedFile
 from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import files
 from google.appengine.api import images
+from google.appengine.api import taskqueue
 
 import settings
 from django.db import models
@@ -15,68 +16,46 @@ from django.db import models
 import mechanize
 from BeautifulSoup import BeautifulSoup
 
-class Gif(models.Model):
-    image = models.ImageField(upload_to='images/%Y/%m/%d/%H/%M/%S/')
-    url = models.CharField(max_length=64)
-    width = models.IntegerField(default=0)
-    height = models.IntegerField(default=0)
-    thumb_url = models.CharField(max_length=64)
-    thumb_width = models.IntegerField(default=0)
-    thumb_height = models.IntegerField(default=0)
-    href = models.CharField(max_length=1024)
-    referrer = models.CharField(max_length=1024)
-    digest = models.CharField(max_length=32)
-    created = models.DateTimeField(auto_now_add=True)
-
-class GifQueueManager(models.Manager):
+class GifManager(models.Manager):
     def queue(self):
         self.browser = mechanize.Browser()
         self.browser.set_handle_robots(False)
 
-        for reddit in ['pics', 'lol', 'wtf', 'gifs']:
-            href = 'http://www.reddit.com/r/' + reddit
+        for reddit in ['pics', 'lol', 'wtf', 'gifs', 'trees']:
+            url = 'http://www.reddit.com/r/' + reddit
+            taskqueue.add(queue_name='crawl', url='/task/crawl', params={'url': url})
 
-            logging.info('Fetching ' + href)
-            response = self.browser.open(href, timeout=10)
+    def crawl(self, url):
+        logging.info('Fetching ' + url)
+        response = self.browser.open(url, timeout=10)
 
-            doc = BeautifulSoup(response.get_data())
-            self.process_doc(href, doc)
-
-    def process_doc(self, href, doc):
+        doc = BeautifulSoup(response.get_data())
         for container in doc.findAll('div', {'class': re.compile(r'\bentry\b')}):
             link = container.find('a', {
                 'class': re.compile(r'\btitle\b'),
                 'href': re.compile(r'\.gif$')
             })
             if link:
-                logging.info('Queueing ' + link['href'])
-                self.queue_image(link['href'], href)
+                image_url = link['href'].strip()
+                if Gif.objects.filter(url=image_url).count() > 0:
+                    continue
+                logging.info('Queueing ' + image_url)
+                taskqueue.add(queue_name='fetch', url='/task/fetch', params={
+                    'url': image_url,
+                    'referrer': url
+                })
 
-    def queue_image(self, image_href, doc_href):
-        image_href = image_href.strip()
-        item = GifQueue(href=image_href, referrer=doc_href)
-        item.save()
-
-    def update(self):
-        if GifQueue.objects.count() < 1:
-            logging.info('Queue empty')
-            return
-
-        item = GifQueue.objects.all()[0]
-
-        logging.info('Fetching %s...' % (item.href))
+    def fetch(self, url, referrer):
+        logging.info('Fetching %s...' % (url))
         try:
-            remote = urllib2.urlopen(item.href, None, 10)
+            remote = urllib2.urlopen(url, None, 10)
         except urllib2.URLError:
             logging.error('Skipping (Invalid URL)')
         else:
-            self.add_image(item, remote)
+            self.add_image(url, referrer, remote)
             remote.close()
 
-        # Whatever happens, delete the queue item
-        item.delete()
-
-    def add_image(self, item, remote):
+    def add_image(self, url, referrer, remote):
         md5 = hashlib.md5()
 
         file_name = files.blobstore.create(mime_type='image/gif')
@@ -91,8 +70,8 @@ class GifQueueManager(models.Manager):
         files.finalize(file_name)
 
         gif = Gif()
-        gif.href = item.href
-        gif.referrer = item.referrer
+        gif.url = url
+        gif.referrer = referrer
         gif.digest = md5.hexdigest()
 
         if Gif.objects.filter(digest=gif.digest).count() > 0:
@@ -121,8 +100,17 @@ class GifQueueManager(models.Manager):
 
         logging.info('Successfully Added')
 
-class GifQueue(models.Model):
-    href = models.CharField(max_length=1024)
+class Gif(models.Model):
+    image = models.ImageField(upload_to='images/%Y/%m/%d/%H/%M/%S/')
+    url = models.CharField(max_length=64)
+    width = models.IntegerField(default=0)
+    height = models.IntegerField(default=0)
+    thumb_url = models.CharField(max_length=64)
+    thumb_width = models.IntegerField(default=0)
+    thumb_height = models.IntegerField(default=0)
+    url = models.CharField(max_length=1024)
     referrer = models.CharField(max_length=1024)
-    objects = GifQueueManager()
+    digest = models.CharField(max_length=32)
+    created = models.DateTimeField(auto_now_add=True)
+    objects = GifManager()
 

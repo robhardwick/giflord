@@ -2,7 +2,7 @@ import logging
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from gif.models import Gif, GifQueue
+from gif.models import Gif
 
 def list(request):
     """ Render list of GIFs """
@@ -19,10 +19,15 @@ def image(request, id):
 
 @csrf_exempt
 def queue(request):
-    GifQueue.objects.queue()
+    Gif.objects.queue()
     return HttpResponse('Success', 'text/plain')
 
 @csrf_exempt
-def update(request):
-    GifQueue.objects.update()
+def crawl(request):
+    Gif.objects.crawl(request.POST['url'])
+    return HttpResponse('Success', 'text/plain')
+
+@csrf_exempt
+def fetch(request):
+    Gif.objects.fetch(request.POST['url'], request.POST['referrer'])
     return HttpResponse('Success', 'text/plain')

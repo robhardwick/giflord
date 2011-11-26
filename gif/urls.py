@@ -7,7 +7,10 @@ urlpatterns = patterns('gif.views',
     # GIFs
     ('^image/(?P<id>\d+)\.gif$', 'image'),
 
-    # Cron Tasks
+    # Cron
     ('^cron/queue$', 'queue'),
-    ('^cron/update$', 'update'),
+
+    # Tasks
+    ('^task/crawl$', 'crawl'),
+    ('^task/fetch$', 'fetch'),
 )
