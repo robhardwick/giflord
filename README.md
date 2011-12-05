@@ -1,5 +1,5 @@
 # giflord
-giflord is a GIF aggregation and listing site for use with [Google App Engine](http://code.google.com/appengine/). The [django-nonrel](http://www.allbuttonspressed.com/projects/django-nonrel) framework is used along with [mechanize](http://wwwsearch.sourceforge.net/mechanize/) and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) for crawling. All dependencies are bundled so the application is ready to deploy straight away!
+giflord is a GIF aggregator and listing site for use with [Google App Engine](http://code.google.com/appengine/). The [mechanize](http://wwwsearch.sourceforge.net/mechanize/) and [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) libraries are used for crawling. All dependencies are bundled with the application so it's ready to deploy straight away!
 
 ## Getting Started
 
@@ -8,16 +8,15 @@ giflord is a GIF aggregation and listing site for use with [Google App Engine](h
 
     `git clone git://github.com/robhardwick/giflord.git`
 
-3. Update any application settings in `giflord/settings.py`
+3. Update any application settings in `settings.py`
 4. Add the location of giflord as an existing application in the Google App Engine Launcher
 5. Run your new application
-6. Add demo images by visiting `/cron/queue` once and `/cron/update` multiple times
-7. When you're ready, deploy your application
-8. You'll start seeing images in your deployed application as soon as the cron hooks have run for the first time
+6. Add demo images by visiting `/cron/queue`
+7. When you're ready, deploy your application. You should start seeing images in the deployed app soon after the cron hook has run for the first time
 
 ## Dependencies
 
-* [django-nonrel](http://www.allbuttonspressed.com/projects/django-nonrel) v1.2.1 (Bundled)
+* [Google App Engine Images API](http://code.google.com/appengine/docs/python/images/usingimages.html)
 * [mechanize](http://wwwsearch.sourceforge.net/mechanize/) v0.2.5 with GAE compatibilty patch (Bundled)
 * [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/) v3.2 (Bundled)
 
