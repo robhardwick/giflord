@@ -66,16 +66,16 @@ class GiflordList(GiflordBaseHandler):
         """ Get pagination nav URL"""
         return None if test else '/%d' % (pos,)
 
-    def get(self, start=0):
+    def get(self, page=1):
         """Lists all available albums."""
-        start = int(start)
+        start = (int(page)-1) * settings.RPP
         gifs = gif_gif.all().fetch(settings.RPP, start)
         count = len(gifs)
         self.render_to_response('index.html', {
             'gifs': gifs,
             'count': count,
-            'prev': self.get_nav(start < 1, start - settings.RPP),
-            'next': self.get_nav(count != settings.RPP, start + settings.RPP),
+            'prev': self.get_nav(start < 1, start - 1),
+            'next': self.get_nav(count != settings.RPP, start + 1),
         })
 
 application = webapp.WSGIApplication([

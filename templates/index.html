@@ -16,6 +16,8 @@
         </li>
     {% endfor %}
     </ul>
-    {% if prev %}<a class="prev" href="{{ prev }}">Previous</a>{% endif %}
-    {% if next %}<a class="next" href="{{ next }}">Next</a>{% endif %}
+    <div class="nav">
+        {% if prev %}<a class="prev" href="{{ prev }}">Previous</a>{% endif %}
+        {% if next %}<a class="next" href="{{ next }}">Next</a>{% endif %}
+    </div>
 {% endblock %}
