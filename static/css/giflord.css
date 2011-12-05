@@ -81,6 +81,12 @@ header {
         display: none;
     }
 
+    #infscr-loading {
+        position: absolute;
+        left: 50%;
+        bottom: -50px;
+    }
+
 .overlay {
     position: absolute;
     padding: 20px;
