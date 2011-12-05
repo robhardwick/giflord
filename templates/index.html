@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}All the GIFs{% endblock %}
+
+{% block pagetitle %}GIFLord{% endblock %}
+{% block subtitle %}{{ subtitle }}{% endblock %}
+
+{% block content %}
+    <p class="loading">Loading {{ count }} gifs...</p>
+    <ul>
+    {% for gif in gifs %}
+        <li>
+            <a href="/image/{{ gif.key.id }}.gif" data-width="{{ gif.width }}" data-height="{{ gif.height }}">
+                <img src="{{ gif.thumb_url }}" width="{{ gif.thumb_width }}" height="{{ gif.thumb_height }}"/>
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+    {% if prev %}<a class="prev" href="{{ prev }}">Previous</a>{% endif %}
+    {% if next %}<a class="next" href="{{ next }}">Next</a>{% endif %}
+{% endblock %}

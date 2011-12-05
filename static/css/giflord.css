@@ -42,16 +42,43 @@ header {
         display: none;
     }
 
-    #main a {
+    #main li {
+        display: block;
         float: left;
+        list-style-type: none;
         margin: 0 10px 10px 0;
         background-color: #fff;
     }
 
-    #main a:hover {
+    #main li:hover {
         -moz-box-shadow:0 0 5px 5px #000;
         -webkit-box-shadow: 0 0 5px #000;
         box-shadow: 0 0 5px #000;
+    }
+
+    .js #main li {
+        display: none;
+    }
+
+    .js #main li.show {
+        display: block;
+    }
+
+    .prev {
+        display: block;
+        float: left;
+        margin-left: 20%;
+    }
+
+    .next {
+        display: block;
+        float: right;
+        margin-right: 20%;
+    }
+
+    .js .prev,
+    .js .next {
+        display: none;
     }
 
 .overlay {
@@ -63,7 +90,7 @@ header {
     box-shadow: 0 0 15px #000;
 }
 
-    .overlay .gif,
+    .overlay img,
     .overlay .close {
         cursor: pointer;
     }

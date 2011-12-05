@@ -1,86 +1,75 @@
 (function($) {
 
-    function getPos(type, size) {
-        if (type == 'left') {
-            win = $(window).width();
-        } else {
-            win = $(window).height();
-        }
-        return ((win / 2) - ((size + 40) / 2));
+    function getPos($win, $link, type) {
+        var win = (type == 'width') ? $win.width() : $win.height();
+        return parseInt((win / 2) - ((parseInt($link.data(type)) + 40) / 2), 10);
     }
 
-    function loadImage($overlay, $link) {
+    function loadImage($win, $overlay, $link) {
 
-        var width = $link.data('width'),
-            height = $link.data('height'),
-            $gif = $overlay.children('.gif')
+        var $gif = $overlay.children('img')
                 .hide()
-                .attr('src', $link.attr('href'))
-                .imagesLoaded(function() {
-                    $gif.fadeIn('fast');
-                });
+                .attr('src', $link.attr('href'));
 
         $.merge($gif, $overlay)
             .animate({
-                width: width + 'px',
-                height: height + 'px',
-                left: getPos('left', width) + 'px',
-                top: getPos('top', height) + 'px'
+                width: $link.data('width') + 'px',
+                height: $link.data('height') + 'px',
+                left: getPos($win, $link, 'width'),
+                top: getPos($win, $link, 'height')
+            });
+
+        $gif.imagesLoaded(function() {
+                $gif.fadeIn('fast');
             });
 
     }
 
     $(document).ready(function() {
 
-        $('html').removeClass('no-js');
+        var $loading = $('.loading').fadeIn('fast'),
+            $win = $(window),
+            $main = $('#main');
 
-        var $loading = $('.loading').fadeIn('fast');
-
-        var $main = $('#main');
-
-        var $items = $main.children('a')
-            .hide()
+        var $items = $main.find('a')
             .click(function() {
 
                 var $link = $(this),
-                    width = $link.data('width'),
-                    height = $link.data('height');
-
-                var $overlay = $('<div/>')
-                    .addClass('overlay')
-                    .css({
-                        width: width,
-                        height: height
-                    })
-                    .appendTo('body')
-                    .overlay({
-                        load: true,
-                        left: getPos('left', width),
-                        top: getPos('top', height),
-                        mask: {
-                            color: '#000',
-                            opacity: 0.4,
-                            loadSpeed: 200
-                        },
-                        onBeforeLoad: function(e) {
-                            $link.css('boxShadow', 'none');
-                        },
-                        onClose: function(e) {
-                            $overlay.remove();
-                        }
-                    });
+                    $overlay = $('<div/>')
+                        .addClass('overlay')
+                        .css({
+                            position: 'absolute',
+                            width: $link.data('width')+'px',
+                            height: $link.data('height')+'px'
+                        })
+                        .appendTo('body')
+                        .overlay({
+                            load: true,
+                            left: getPos($win, $link, 'width'),
+                            top: getPos($win, $link, 'height'),
+                            mask: {
+                                color: '#000',
+                                opacity: 0.4,
+                                loadSpeed: 200
+                            },
+                            onBeforeLoad: function(e) {
+                                $link.css('boxShadow', 'none');
+                            },
+                            onClose: function(e) {
+                                $overlay.remove();
+                            }
+                        });
 
                 $('<img/>')
                     .attr('src', $link.attr('href'))
-                    .attr('width', width)
-                    .attr('height', height)
-                    .addClass('gif')
+                    .attr('width', $link.data('width'))
+                    .attr('height', $link.data('height'))
                     .click(function() {
-                        $link = $link.next();
+                        $link = $link.parent().next().children('a');
                         if ($link.size() == 0) {
                             $link = $items.filter(':first');
                         }
-                        loadImage($overlay, $link);
+                        loadImage($win, $overlay, $link);
                     })
                     .appendTo($overlay);
 
@@ -91,12 +80,14 @@
         $main.imagesLoaded(function($images) {
             $main
                 .masonry({
-                    itemSelector : 'a',
+                    itemSelector: 'li',
                     columnWidth: 25
                 })
-            $items
-                .fadeIn();
-            $loading.fadeOut();
+            $loading
+                .fadeOut('fast', function() {
+                    $main.find('li')
+                        .fadeIn();
+                });
         });
 
     });

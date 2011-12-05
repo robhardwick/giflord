@@ -1,6 +1,5 @@
-total_storage_limit: 120M
 queue:
 - name: crawl
-  rate: 35/s
+  rate: 1/m
 - name: fetch
-  rate: 35/s
+  rate: 5/m

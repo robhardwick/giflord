@@ -1,4 +1,4 @@
 cron:
 - description: gif queue task
   url: /cron/queue
-  schedule: every 1 hours
+  schedule: every 8 hours

@@ -1,41 +1,40 @@
-{% load static %}
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
+    <script>document.getElementsByTagName('html')[0].className = 'js';</script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>GIFLord | {% block title %}{% endblock %}</title>
     <meta name="description" content="GIFLord - The premier GIF aggregation experience">
     <meta name="author" content="Rob Hardwick">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{% get_static_prefix %}css/giflord.css">
+    <link rel="stylesheet" href="{{ prefix }}css/giflord.css">
     {% block css %}{% endblock %}
     {% block extra-head %}{% endblock %}
 </head>
 <body>
-    <div id="container">
-        <header>
-            <h1>{% block pagetitle %}{% endblock %}</h1>
-            <h2>{% block subtitle %}{% endblock %}</h2>
-            {% block content-header %}
-                {% if error %}<div class="error">{{ error }}</div>{% endif %}
-                {% if info %}<div class="info">{{ info }}</div>{% endif %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="info">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endblock %}
-        </header>
-        <div id="main" role="main">
-            {% block content %}{% endblock %}
-        </div>
+    <header>
+        <h1>{% block pagetitle %}{% endblock %}</h1>
+        <h2>{% block subtitle %}{% endblock %}</h2>
+        {% block content-header %}
+            {% if error %}<div class="error">{{ error }}</div>{% endif %}
+            {% if info %}<div class="info">{{ info }}</div>{% endif %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="info">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+    </header>
+    <div id="main" role="main">
+        {% block content %}{% endblock %}
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{% get_static_prefix %}js/libs/jquery-1.6.4.min.js"><\/script>')</script>
-    <script type="text/javascript" src="{% get_static_prefix %}js/libs/jquery.tools.min.js"></script>
-    <script type="text/javascript" src="{% get_static_prefix %}js/libs/jquery.masonry.min.js"></script>
-    <script type="text/javascript" src="{% get_static_prefix %}js/libs/jquery.imagesloaded.js"></script>
-    <script defer src="{% get_static_prefix %}js/giflord.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ prefix }}js/libs/jquery-1.6.4.min.js"><\/script>')</script>
+    <script src="{{ prefix }}js/libs/jquery.tools.min.js"></script>
+    <script src="{{ prefix }}js/libs/jquery.masonry.min.js"></script>
+    <script src="{{ prefix }}js/libs/jquery.imagesloaded.js"></script>
+    <script src="{{ prefix }}js/libs/jquery.infinitescroll.min.js"></script>
+    <script defer src="{{ prefix }}js/giflord.js"></script>
     {% block js %}{% endblock %}
     <!--[if lt IE 7 ]>
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
