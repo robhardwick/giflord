@@ -53,6 +53,7 @@ class GiflordBaseHandler(webapp.RequestHandler):
            filename: template path (relative to this file)
            template_args: argument dict for the template"""
         template_args.setdefault('current_uri', self.request.uri)
+        template_args.setdefault('dev', os.environ.get('SERVER_SOFTWARE','').startswith('Development'))
         template_args.setdefault('prefix', settings.STATIC_PREFIX)
         template_args.setdefault('subtitle', random.choice(settings.SUBTITLES))
         self.response.out.write(
@@ -69,7 +70,7 @@ class GiflordList(GiflordBaseHandler):
     def get(self, page=1):
         """Lists all available albums."""
         start = (int(page)-1) * settings.RPP
-        gifs = gif_gif.all().fetch(settings.RPP, start)
+        gifs = gif_gif.all().order('-created').fetch(settings.RPP, start)
         count = len(gifs)
         self.render_to_response('index.html', {
             'gifs': gifs,

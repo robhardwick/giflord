@@ -7,7 +7,11 @@
     <meta name="description" content="GIFLord - The premier GIF aggregation experience">
     <meta name="author" content="Rob Hardwick">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="{{ prefix }}css/giflord.css">
+    {% if dev %}
+        <link rel="stylesheet" href="{{ prefix }}css/giflord.css">
+    {% else %}
+        <link rel="stylesheet" href="{{ prefix }}css/giflord.min.css">
+    {% endif %}
     {% block css %}{% endblock %}
     {% block extra-head %}{% endblock %}
 </head>
@@ -30,11 +34,15 @@
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{ prefix }}js/libs/jquery-1.6.4.min.js"><\/script>')</script>
-    <script src="{{ prefix }}js/libs/jquery.tools.min.js"></script>
-    <script src="{{ prefix }}js/libs/jquery.masonry.min.js"></script>
-    <script src="{{ prefix }}js/libs/jquery.imagesloaded.js"></script>
-    <script src="{{ prefix }}js/libs/jquery.infinitescroll.min.js"></script>
-    <script defer src="{{ prefix }}js/giflord.js"></script>
+    {% if dev %}
+        <script src="{{ prefix }}js/libs/jquery.tools.min.js"></script>
+        <script src="{{ prefix }}js/libs/jquery.masonry.min.js"></script>
+        <script src="{{ prefix }}js/libs/jquery.imagesloaded.js"></script>
+        <script src="{{ prefix }}js/libs/jquery.infinitescroll.min.js"></script>
+        <script defer src="{{ prefix }}js/giflord.js"></script>
+    {% else %}
+        <script defer src="{{ prefix }}js/giflord.min.js"></script>
+    {% endif %}
     {% block js %}{% endblock %}
     <!--[if lt IE 7 ]>
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
