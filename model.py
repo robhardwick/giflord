@@ -83,7 +83,6 @@ class GifManager:
             time.sleep(1) 
             blob_key = files.blobstore.get_blob_key(file_name)
 
-        logging.info('file_name: ' + file_name)
         header = blobstore.fetch_data(blob_key, 0, 50000)
         image = images.Image(image_data=header)
 
