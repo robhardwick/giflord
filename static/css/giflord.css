@@ -31,7 +31,7 @@ header {
 
 #main {
     padding-top: 120px;
-    margin: 0 15px 10px 15px;
+    margin: 0 15px 70px 15px;
 }
 
     .loading {
@@ -64,6 +64,12 @@ header {
         display: block;
     }
 
+    #infscr-loading {
+        position: absolute;
+        left: 50%;
+        bottom: -50px;
+    }
+
     .prev {
         display: block;
         float: left;
@@ -79,12 +85,6 @@ header {
     .js .prev,
     .js .next {
         display: none;
-    }
-
-    #infscr-loading {
-        position: absolute;
-        left: 50%;
-        bottom: -50px;
     }
 
 .overlay {

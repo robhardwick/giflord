@@ -88,16 +88,16 @@
             $loading
                 .fadeOut('fast', function() {
                     $main.find('li')
-                        .fadeIn();
+                        .addClass('show')
+                        .fadeIn('fast');
                     $('#main').infinitescroll({
                         navSelector: '.next',
                         nextSelector: '.next',
                         itemSelector: '#main li',
                         bufferPx: 100,
                         loading: {
-                            finishedMsg: null,
+                            finishedMsg: '',
                             img: '/static/img/loading.gif',
-                            msg: null,
                             msgText: '',
                         },
                         pathParse: {
