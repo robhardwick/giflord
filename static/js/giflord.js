@@ -91,6 +91,7 @@
                         .addClass('show')
                         .fadeIn('fast');
                     $('#main').infinitescroll({
+                        debug: false,
                         navSelector: '.next',
                         nextSelector: '.next',
                         itemSelector: '#main li',
