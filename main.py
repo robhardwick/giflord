@@ -33,24 +33,26 @@ class GiflordImage(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, id):
         key = 'gif:'+id
         gif = memcache.get(key)
-        if gif is not None:
-            self.response.headers['Content-Type'] = 'image/gif'
-            self.response.out.write(gif)
-            return
-        gif = gif_gif.get_by_id(int(id))
         if gif is None:
-            self.error(404)
-            return
-        gif.objects.updateV2(gif)
-        if not blobstore.get(gif.image):
-            self.error(404)
+            gif = gif_gif.get_by_id(int(id))
+            if gif is None:
+                self.error(404)
+                return
+            gif.objects.updateV2(gif)
+            if not blobstore.get(gif.image):
+                self.error(404)
+            else:
+                image = blobstore.BlobInfo.get(gif.image)
+                if image.size < 1038576:
+                    # Cache for 1 day
+                    memcache.set(key, blobstore.fetch_data(image, 0, image.size), 86400)
+                    logging.info('Cached %s' % (key,))
+                self.send_blob(gif.image)
         else:
-            image = blobstore.BlobInfo.get(gif.image)
-            if image.size < 1038576:
-                # Cache for 1 day
-                memcache.set(key, blobstore.fetch_data(image, 0, image.size), 86400)
-                logging.info('Cached %s' % (key,))
-            self.send_blob(gif.image)
+            self.response.out.write(gif)
+        # Cache for 1 year
+        self.response.headers['Cache-Control'] = 'max-age=29030400, public'
+        self.response.headers['Content-Type'] = 'image/gif'
 
 class GiflordBaseHandler(webapp.RequestHandler):
     """Base RequestHandler with some convenience functions."""
@@ -81,20 +83,18 @@ class GiflordList(GiflordBaseHandler):
         """Lists all available albums."""
         key = 'page:'+str(num)
         page = memcache.get(key)
-        if page is not None:
-            self.response.out.write(page)
-            return
-        start = (int(num)-1) * settings.RPP
-        gifs = gif_gif.all().order('-created').fetch(settings.RPP, start)
-        count = len(gifs)
-        page = self.render('index.html', {
-            'gifs': gifs,
-            'count': count,
-            'prev': self.get_nav(start < 1, start - 1),
-            'next': self.get_nav(count != settings.RPP, start + 1),
-        })
-        # Cache for 10 minutes
-        memcache.set(key, page, 600)
+        if page is None:
+            start = (int(num)-1) * settings.RPP
+            gifs = gif_gif.all().order('-created').fetch(settings.RPP, start)
+            page = self.render('index.html', {
+                'gifs': gifs,
+                'prev': self.get_nav(start < 1, start - 1),
+                'next': self.get_nav(len(gifs) != settings.RPP, start + 1),
+            })
+            # Cache for 10 minutes
+            memcache.set(key, page, 600)
+        # Cache for 30 minutes
+        self.response.headers['Cache-Control'] = 'max-age=1800, public'
         self.response.out.write(page)
         logging.info('Cached %s' % (key,))
 
