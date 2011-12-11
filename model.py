@@ -115,7 +115,7 @@ class GifManager:
         if gif.size is None:
             image = blobstore.BlobInfo.get(gif.image)
             gif.size = image.size
-            git.put()
+            gif.put()
             logging.info('Updated V3 ' + gif.image)
 
 class gif_gif(db.Model):
