@@ -8,5 +8,5 @@ SUBTITLES = [
     'Lord, Thank You For These Gifs'
 ]
 THUMB_SIZE = 100
-CRAWL_TIMEOUT = 10
+CRAWL_TIMEOUT = 20
 RPP = 100
