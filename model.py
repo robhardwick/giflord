@@ -89,6 +89,7 @@ class GifManager:
         gif.image = str(blob_key)
         gif.width = image.width
         gif.height = image.height
+        gif.size = image.size
 
         gif.thumb_url = images.get_serving_url(blob_key, settings.THUMB_SIZE)
 
@@ -107,13 +108,21 @@ class GifManager:
             info = blobstore.BlobInfo.get(image)
             gif.image = str(info.key())
             gif.put()
-            logging.info('Updated ' + gif.image)
+            logging.info('Updated V2 ' + gif.image)
 
+    def updateV3(self, gif):
+        self.updateV2(gif)
+        if gif.size is None:
+            image = blobstore.BlobInfo.get(gif.image)
+            gif.size = image.size
+            git.put()
+            logging.info('Updated V3 ' + gif.image)
 
 class gif_gif(db.Model):
     image = db.StringProperty()
     width = db.IntegerProperty()
     height = db.IntegerProperty()
+    size = db.IntegerProperty()
     thumb_url = db.StringProperty()
     thumb_width = db.IntegerProperty()
     thumb_height = db.IntegerProperty()

@@ -38,14 +38,13 @@ class GiflordImage(blobstore_handlers.BlobstoreDownloadHandler):
             if gif is None:
                 self.error(404)
                 return
-            gif.objects.updateV2(gif)
+            gif.objects.updateV3(gif)
             if not blobstore.get(gif.image):
                 self.error(404)
             else:
-                image = blobstore.BlobInfo.get(gif.image)
-                if image.size < 1038576:
+                if gif.size < 1038576:
                     # Cache for 1 day
-                    memcache.set(key, blobstore.fetch_data(image, 0, image.size), 86400)
+                    memcache.set(key, blobstore.fetch_data(gif.image, 0, image.size), 86400)
                     logging.info('Cached %s' % (key,))
                 self.send_blob(gif.image)
         else:
