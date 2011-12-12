@@ -33,7 +33,9 @@ class GiflordImage(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, id):
         key = 'gif:'+id
         gif = memcache.get(key)
-        if gif is None:
+        if gif is not None:
+            self.response.out.write(gif)
+        else:
             gif = gif_gif.get_by_id(int(id))
             if gif is None:
                 self.error(404)
@@ -44,11 +46,9 @@ class GiflordImage(blobstore_handlers.BlobstoreDownloadHandler):
             else:
                 if gif.size < 1038576:
                     # Cache for 1 day
-                    memcache.set(key, blobstore.fetch_data(gif.image, 0, image.size), 86400)
+                    memcache.set(key, blobstore.fetch_data(gif.image, 0, gif.size), 86400)
                     logging.info('Cached %s' % (key,))
                 self.send_blob(gif.image)
-        else:
-            self.response.out.write(gif)
         # Cache for 1 year
         self.response.headers['Cache-Control'] = 'max-age=29030400, public'
         self.response.headers['Content-Type'] = 'image/gif'
