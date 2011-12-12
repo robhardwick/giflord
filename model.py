@@ -83,13 +83,15 @@ class GifManager:
             time.sleep(1) 
             blob_key = files.blobstore.get_blob_key(file_name)
 
+        info = blobstore.BlobInfo.get(blob_key)
+        gif.size = info.size
+
         header = blobstore.fetch_data(blob_key, 0, 50000)
         image = images.Image(image_data=header)
 
         gif.image = str(blob_key)
         gif.width = image.width
         gif.height = image.height
-        gif.size = image.size
 
         gif.thumb_url = images.get_serving_url(blob_key, settings.THUMB_SIZE)
 
