@@ -54,7 +54,7 @@
                             .addClass('show')
                             .hide();
                         $items.find('a')
-                            .click(function() { return load(this); });
+                            .click(function() { return load($(this)); });
                         $items.imagesLoaded(function() {
                             $main.masonry('appended', $items, true);
                             $items.fadeIn('fast');
