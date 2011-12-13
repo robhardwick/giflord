@@ -45,8 +45,8 @@ class GiflordImage(blobstore_handlers.BlobstoreDownloadHandler):
                 self.error(404)
             else:
                 if gif.size < 1038576:
-                    # Cache for 1 day
-                    memcache.set(key, blobstore.fetch_data(gif.image, 0, gif.size), 86400)
+                    # Cache for 1 year
+                    memcache.set(key, blobstore.fetch_data(gif.image, 0, gif.size), 29030400)
                     logging.info('Cached %s' % (key,))
                 self.send_blob(gif.image)
         # Cache for 1 year
