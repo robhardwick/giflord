@@ -39,18 +39,6 @@ header {
     padding-top: 110px;
 }
 
-    .loading {
-        padding: 20px;
-        width: 100%;
-        height: 40px;
-        display: none;
-        font-family: RICHARD_MILLER, Serif;
-        font-weight: normal;
-        text-align: center;
-        font-size: 40px;
-        line-height: 40px;
-    }
-
     #main li {
         display: block;
         float: left;
